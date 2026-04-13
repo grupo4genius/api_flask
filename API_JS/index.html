@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contactos con Axios</title>
+    <style>
+        table { border-collapse: collapse; width: 50%; margin: 20px auto; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center">Lista de Contactos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-body"></tbody>
+    </table>
+
+    <!-- Axios desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const API_URL = "http://localhost:3000/contacts"; // Flask en 3000
+
+        async function cargarContactos() {
+            try {
+                const res = await axios.get(API_URL);
+                const contactos = res.data.contacts; // <-- clave: accedemos al array dentro del objeto
+                console.log("Contactos recibidos:", contactos);
+
+                const tbody = document.getElementById("tabla-body");
+                tbody.innerHTML = "";
+
+                contactos.forEach(c => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${c.name}</td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Error cargando contactos:", err);
+            }
+        }
+
+        // Espera a que el DOM esté listo
+        window.addEventListener("DOMContentLoaded", cargarContactos);
+    </script>
+</body>
+</html>
